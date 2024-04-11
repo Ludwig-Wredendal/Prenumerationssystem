@@ -1,2 +1,2 @@
 ﻿
-SELECT * FROM [tbl_prenumeranter]
+SELECT * FROM [tbl_prenumerant]

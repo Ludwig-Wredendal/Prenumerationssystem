@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Prenumerationssystem.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,17 +10,24 @@ namespace Prenumerationssystem.Controllers
     public class PrenumerantController : ControllerBase
     {
         // GET: api/<PrenumerantController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("getPrenumeranter", Name = "GetPrenumerantWithDataReader")]
+        public List<PrenumerantDetalj> GetPrenumerantWithDataReader()
         {
-            return new string[] { "value1", "value2" };
+            List<PrenumerantDetalj> prenumerantlista = new List<PrenumerantDetalj>();
+            PrenumerantMetoder pm = new PrenumerantMetoder();
+            string error = "";
+            prenumerantlista = pm.GetPrenumerantWithDataReader(out error);
+            return prenumerantlista;
         }
 
         // GET api/<PrenumerantController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("GetPrenumerantByPn", Name = "GetPrenumerantByPn")]
+        public PrenumerantDetalj GetPrenumerantByPn(int prenumerationsnummer)
         {
-            return "value";
+            PrenumerantDetalj prenumerant = new PrenumerantDetalj();
+            PrenumerantMetoder pm = new PrenumerantMetoder();
+            prenumerant = pm.GetPrenumerantByPn(prenumerationsnummer, out string error);
+            return (prenumerant);
         }
 
         // POST api/<PrenumerantController>
