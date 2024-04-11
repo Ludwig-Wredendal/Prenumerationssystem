@@ -46,9 +46,24 @@ namespace Prenumerationssystem.Controllers
         }
 
         // PUT api/<PrenumerantController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("EditPrenumerant", Name = "EditPrenumerant")]
+        public IActionResult EditPrenumerant(int prenumerationsnummer, [FromBody] PrenumerantDetalj updatedPrenumerant)
         {
+            if (updatedPrenumerant == null || updatedPrenumerant.pr_prenumerationsnummer != prenumerationsnummer)
+            {
+                return BadRequest("Invalid prenumerant data");
+            }
+
+            PrenumerantMetoder pm = new PrenumerantMetoder();
+            string error = "";
+            PrenumerantDetalj editedPrenumerant = pm.EditPrenumerant(updatedPrenumerant, prenumerationsnummer, out error);
+
+            if (editedPrenumerant == null)
+            {
+                return NotFound("Prenumerant not found");
+            }
+
+            return Ok(editedPrenumerant);
         }
 
         // DELETE api/<PrenumerantController>/5

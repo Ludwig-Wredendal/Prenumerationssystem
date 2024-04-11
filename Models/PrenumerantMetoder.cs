@@ -5,6 +5,7 @@ using Prenumerationssystem.Models;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Prenumerationssystem.Models
 {
@@ -105,6 +106,66 @@ namespace Prenumerationssystem.Models
                 return null;
             }
         }
+
+        // PUT:
+        public PrenumerantDetalj EditPrenumerant(PrenumerantDetalj pd, int prenumerationsnummer, out string errormsg) 
+        {
+            //skapa SQL-connection
+            SqlConnection dbConnection = new SqlConnection();
+
+            // Koppling mot SQL Server
+            dbConnection.ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=db_Prenumerant;Integrated Security=True";
+
+            // sqlstring och uppdatera till en student i databasen
+            String sqlstring = "UPDATE tbl_prenumerant SET " +
+                       "pr_personnummer = @personnummer, " +
+                       "pr_fornamn = @fornamn, " +
+                       "pr_efternamn = @efternamn, " +
+                       "pr_telefonnummer = @telefonnummer, " +
+                       "pr_utdelningsadress = @utdelningsadress, " +
+                       "pr_postnummer = @postnummer, " +
+                       "pr_ort = @ort " +
+                       "WHERE pr_prenumerationsnummer = @id";
+          
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+            dbCommand.Parameters.Add("id", SqlDbType.Int).Value = prenumerationsnummer;
+
+
+            dbCommand.Parameters.Add("personnummer", SqlDbType.Int).Value = pd.pr_personnummer;
+            dbCommand.Parameters.Add("fornamn", SqlDbType.NVarChar, 50).Value = pd.pr_fornamn;
+            dbCommand.Parameters.Add("efternamn", SqlDbType.NVarChar, 50).Value = pd.pr_efternamn;
+            dbCommand.Parameters.Add("telefonnummer", SqlDbType.Int).Value = pd.pr_telefonnummer;
+            dbCommand.Parameters.Add("utdelningsadress", SqlDbType.NVarChar, 50).Value = pd.pr_utdelningsadress;
+            dbCommand.Parameters.Add("postnummer", SqlDbType.Int).Value = pd.pr_postnummer;
+            dbCommand.Parameters.Add("ort", SqlDbType.NVarChar, 50).Value = pd.pr_ort;
+
+            try
+            {
+                dbConnection.Open();
+                int rowsAffected = dbCommand.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    errormsg = "";
+                    return pd;
+                }
+                else
+                {
+                    errormsg = "No prenumerant record updated. Prenumerant not found.";
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                dbCommand.Connection.Close();
+            }
+        }
+
 
 
         // GET:
