@@ -167,6 +167,40 @@ namespace Prenumerationssystem.Models
         }
 
 
+        public PrenumerantDetalj DeletePrenumerant(int prenumerationsnummer, out string errormsg)
+        {
+            // Create SQL connection
+            SqlConnection dbConnection = new SqlConnection();
+
+            // Connection to SQL Server
+            dbConnection.ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=db_Prenumerant;Integrated Security=True";
+
+            // SQL string to delete the student
+            string deleteSql = "DELETE FROM [tbl_prenumerant] WHERE pr_prenumerationsnummer = @id";
+
+            SqlCommand dbCommand = new SqlCommand(deleteSql, dbConnection);
+            dbCommand.Parameters.Add("id", SqlDbType.Int).Value = prenumerationsnummer;
+
+            try
+            {
+                dbConnection.Open();
+
+                // Execute the DELETE statement
+                dbCommand.ExecuteNonQuery();
+
+                errormsg = "";
+                return null;
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return null;
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
 
         // GET:
         public List<PrenumerantDetalj> GetPrenumerantWithDataReader(out string errormsg)

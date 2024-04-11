@@ -67,9 +67,14 @@ namespace Prenumerationssystem.Controllers
         }
 
         // DELETE api/<PrenumerantController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("DeletePrenumerant", Name = "DeletePrenumerant")]
+        public PrenumerantDetalj DeletePrenumerant(int prenumerationsnummer)
         {
+            PrenumerantDetalj prenuremant = new PrenumerantDetalj();
+            PrenumerantMetoder pm = new PrenumerantMetoder();
+            prenuremant = pm.DeletePrenumerant(prenumerationsnummer, out string error);
+
+            return (prenuremant);
         }
     }
 }
