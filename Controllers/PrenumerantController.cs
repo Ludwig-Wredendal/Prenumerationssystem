@@ -31,9 +31,18 @@ namespace Prenumerationssystem.Controllers
         }
 
         // POST api/<PrenumerantController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("PostPrenumerant", Name = "PostPrenumerant")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public string Post([FromBody] PrenumerantDetalj pd)
         {
+            PrenumerantMetoder pm = new PrenumerantMetoder();
+            string errormsg = "";
+            int i = pm.PostPrenumerant(pd, out errormsg);
+            if (errormsg == null)
+            {
+                return i.ToString();
+            }
+            else return errormsg;
         }
 
         // PUT api/<PrenumerantController>/5

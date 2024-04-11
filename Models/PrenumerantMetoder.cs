@@ -11,6 +11,47 @@ namespace Prenumerationssystem.Models
     public class PrenumerantMetoder
     {
         public PrenumerantMetoder() { }
+
+        public int PostPrenumerant(PrenumerantDetalj pd, out string errormsg)
+        {
+            //skapa SQL-connection
+            SqlConnection dbConnection = new SqlConnection();
+
+            // Koppling mot SQL Server
+            dbConnection.ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=db_Prenumerant;Integrated Security=True";
+
+            // sqlstring och lägg till en student i databasen
+            String sqlstring = "INSERT INTO tbl_prenumerant (pr_personnummer, pr_fornamn, pr_efternamn, pr_telefonnummer, pr_utdelningsadress, pr_postnummer, pr_ort) " +
+                "VALUES (@personnummer, @fornamn,@efternamn,@telefonnummer, @utdelningsadress,@postnummer,@ort)";
+            SqlCommand dbCommand = new SqlCommand(sqlstring, dbConnection);
+             
+            dbCommand.Parameters.Add("personnummer", SqlDbType.Int).Value = pd.pr_personnummer;
+            dbCommand.Parameters.Add("fornamn", SqlDbType.NVarChar, 50).Value = pd.pr_fornamn;
+            dbCommand.Parameters.Add("efternamn", SqlDbType.NVarChar, 50).Value = pd.pr_efternamn;
+            dbCommand.Parameters.Add("telefonnummer", SqlDbType.Int).Value = pd.pr_telefonnummer;
+            dbCommand.Parameters.Add("utdelningsadress", SqlDbType.NVarChar, 50).Value = pd.pr_utdelningsadress;
+            dbCommand.Parameters.Add("postnummer", SqlDbType.Int).Value = pd.pr_postnummer;
+            dbCommand.Parameters.Add("ort", SqlDbType.NVarChar, 50).Value = pd.pr_ort;
+
+            try
+            {
+                dbConnection.Open();
+                int i = 0;
+                i = dbCommand.ExecuteNonQuery();
+                if (i == 1) { errormsg = "Error"; }
+                else { errormsg = "Det skapas inte en prenumerant i databasen."; }
+                return (i);
+            }
+            catch (Exception e)
+            {
+                errormsg = e.Message;
+                return 0;
+            }
+            finally
+            {
+                dbCommand.Connection.Close();
+            }
+        }
         // GET id
         public PrenumerantDetalj GetPrenumerantByPn(int prenumerationsnummer, out string errormsg)
         {
